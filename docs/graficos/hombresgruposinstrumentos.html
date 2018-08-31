@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<style>
+body {
+  font-family: Lato;
+  font: 14px sans-serif;
+  fill:#797D7F;
+}
+
+svg {
+  font-family: Lato;
+  font: 14px sans-serif;
+  fill:#797D7F;
+
+}
+
+text {
+  font: 12px sans-serif;
+  fill:#797D7F;
+
+}
+
+.axis .domain {
+  display: none;
+  font: 14px sans-serif;
+  fill:#797D7F;
+}
+</style>
+
+<body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+// create the svg
+var margin = {top: 30, right: 20, bottom: 95, left: 40},
+width = 960 - margin.left - margin.right,
+height = 500 - margin.top - margin.bottom;
+
+    var svg = d3.select("body").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .attr("shape-rendering", "geometric-precision");
+
+svg.call(responsivefy);
+
+g = svg.append("g").attr("transform", "translate(" + margin.left + "," + (margin.top) + ")");
+
+svg.append("text")
+  .attr("x", 275)
+  .attr("y", 3)
+  .attr("dy", "0.8em")
+  .style("font-size", "18px")
+  .text("Hombres por grupos de instrumentos");
+
+// set x scale
+var x = d3.scaleBand()
+    .rangeRound([0, width])
+    .paddingInner(0.05)
+    .align(0.1);
+
+// set y scale
+var y = d3.scaleLinear()
+    .rangeRound([height, 0]);
+
+// set the colors
+var z = d3.scaleOrdinal()
+    .range(["#7DB4A7", "#98D0C2", "#B3ECDE", "#CFFFFB"]);
+
+// load the csv and create the chart https://gist.githubusercontent.com/arancruzmar/90673acf4a4ae498da96f18a6f9e3c5e/raw/a5a074447522fa28ea08c547b15fe3cb9dc107fc/data2.csv
+d3.csv("https://gist.githubusercontent.com/arancruzmar/f451475abd9e8ba13283949e5619a630/raw/ce93464f6aea57852c5c941e1bf1142622595a16/datosgruposinstrumentosporpaiseshombres", function(d, i, columns) {
+  for (i = 1, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
+  d.total = t;
+  return d;
+}, function(error, data) {
+  if (error) throw error;
+
+  var keys = data.columns.slice(1);
+
+  data.sort(function(a, b) { return a.total - b.total; });
+  x.domain(data.map(function(d) { return d.Pais; }));
+  y.domain([0, d3.max(data, function(d) { return d.total; })]).nice();
+  z.domain(keys);
+
+  g.append("g")
+    .selectAll("g")
+    .data(d3.stack().keys(keys)(data))
+    .enter().append("g")
+      .attr("fill", function(d) { return z(d.key); })
+    .selectAll("rect")
+    .data(function(d) { return d; })
+    .enter().append("rect")
+      .attr("x", function(d) { return x(d.data.Pais); })
+      .attr("y", function(d) { return y(d[1]); })
+      .attr("height", function(d) { return y(d[0]) - y(d[1]); })
+      .attr("width", x.bandwidth())
+      //.attr("transform", "rotate(90)")
+      /**.attr("transform", function(d) {
+                return "rotate(-65)"
+              });*/
+    .on("mouseover", function() { tooltip.style("display", null); })
+    .on("mouseout", function() { tooltip.style("display", "none"); })
+    .on("mousemove", function(d) {
+      //console.log(d+"%");
+      var xPosition = d3.mouse(this)[0] - 5;
+      var yPosition = d3.mouse(this)[1] - 5;
+      tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+      tooltip.select("text").text(d[1]-d[0]+"%");
+    });
+
+  g.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(0," + height+")")
+      .call(d3.axisBottom(x))
+    .selectAll("text")
+      .style("text-anchor", "end")
+      //.attr("transform", "translate(0," + 200+")")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-65)" );
+
+      /*.attr("y", 0)
+      .attr("x", -40)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(-65)")
+      .style("text-anchor", "start");*/
+
+  /*g.append("g")
+      .attr("class", "axis")
+      .call(d3.axisLeft(y).ticks(null, "s"))
+    .append("text")
+      .attr("x", 2)
+      .attr("y", y(y.ticks().pop()) + 0.5)
+      .attr("dy", "0.32em")
+      .attr("fill", "#FFFFFF")
+      .attr("font-weight", "bold")
+      //.attr("transform", "rotate(90)") Rota eje Y
+      .attr("text-anchor", "start");*/
+
+   /*svg.append("g")
+      .selectAll("text")
+        .attr("transform", "rotate(90)");*/
+
+  var legend = g.append("g")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", 12)
+      .attr("text-anchor", "start")
+    .selectAll("g")
+    .data(keys.slice().reverse())
+    .enter().append("g")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("x",0)
+      .attr("width", 19)
+      .attr("height", 19)
+      .attr("fill", z);
+
+  legend.append("text")
+      .attr("x", 24)
+      .attr("y", 9.5)
+      .attr("dy", "0.32em")
+      .text(function(d) { return d; });
+});
+
+  // Prep the tooltip bits, initial display is hidden
+  var tooltip = svg.append("g")
+    .attr("class", "tooltip")
+    .style("display", "none");
+
+  tooltip.append("rect")
+    .attr("width", 60)
+    .attr("height", 20)
+    .attr("fill", "white")
+    .style("opacity", 1);
+
+  tooltip.append("text")
+    .attr("x", 30)
+    .attr("dy", "1.2em")
+    .style("text-anchor", "middle")
+    .attr("font-size", "12px")
+    .attr("font-weight", "bold");
+
+    function responsivefy(svg) {
+          // get container + svg aspect ratio
+          var container = d3.select(svg.node().parentNode),
+              width = parseInt(svg.style("width")),
+              height = parseInt(svg.style("height")),
+              aspect = width / height;
+          // add viewBox and preserveAspectRatio properties,
+          // and call resize so that svg resizes on inital page load
+          svg.attr("viewBox", "0 0 " + width + " " + height)
+              .attr("preserveAspectRatio", "xMinYMid")
+              .call(resize);
+          // to register multiple listeners for same event type,
+          // you need to add namespace, i.e., 'click.foo'
+          // necessary if you call invoke this function for multiple svgs
+          // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+          d3.select(window).on("resize." + container.attr("id"), resize);
+          // get width of container and resize svg to fit it
+          function resize() {
+              var targetWidth = parseInt(container.style("width"));
+              svg.attr("width", targetWidth);
+              svg.attr("height", Math.round(targetWidth / aspect));
+          }
+        }
+
+</script>
+</body>
