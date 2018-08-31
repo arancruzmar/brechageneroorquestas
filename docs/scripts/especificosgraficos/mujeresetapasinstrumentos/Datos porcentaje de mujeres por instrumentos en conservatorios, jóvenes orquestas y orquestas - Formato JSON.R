@@ -46,6 +46,6 @@ write_csv(procentajesmujeresinstrumentos, 'procentajesmujeresinstrumentos.csv')
 
 procentajesmujeresinstrumentos %>% 
   toJSON() %>%
-  write_lines('procentajesmujeresinstrumentos.json')
+  write_lines('procentajesmujeresinstrumentosetapas.json')
 
 
