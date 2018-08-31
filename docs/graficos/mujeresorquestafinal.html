@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+<style>
+
+
+svg {
+  font: 16px;
+  font-family: Lato;
+  fill:#797D7F;
+}
+
+p {
+  margin: 6px 2px;
+}
+
+
+.axisTitle {
+  font: 16px;
+  color:#797D7F;
+}
+
+.x.axis .domain {
+  fill: none;
+  stroke: #797D7F;
+  shape-rendering: crispEdges;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #797D7F;
+  border-radius: 2px;
+  font: 14px sans-serif;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+
+.avg-line text {
+  fill: #797D7F;
+  font-family: Lato;
+	font-size: 16px;
+  font-weight: 500;
+
+}
+
+.avg-line line {
+  stroke: #797D7F;
+  fill: none;
+  stroke-width: 2;
+}
+
+
+
+body {
+
+	font-family: Lato;
+  font-size: 14px;
+
+}
+
+
+
+</style>
+</head>
+<body>
+
+<script>
+var margin = {top: 20, right: 50, bottom: 20, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom,
+
+    padding = 2,
+    maxRadius = 30,
+    minRadius = 2,
+    numberOfNodes = 103;
+
+var x = d3.scaleLinear()
+  .domain( [0, 60] )
+  .range( [margin.left, width + margin.right ] );
+
+
+var xAxis = d3.axisBottom(x);
+
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-6, 0])
+  .html(function(d) {
+    return "<strong>"+d.orquesta+", "+d.pais+"</strong><span><p>Porcentaje de mujeres: <span>" + d.value + "%</span></p>\
+    <p>Total instrumentistas: <span>" + d.size + "</span></p>";
+  });
+
+var svg = d3.select("body").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .attr("shape-rendering", "geometric-precision");
+
+svg.call(responsivefy);
+svg.call(tip);
+
+
+svg.append("g")
+  .attr("class", "x axis")
+  .attr("transform", "translate(0," + ( margin.top + ( height/2) ) + ")")
+  .call(xAxis);
+
+var xAxisTitle = svg.append("text")
+  .attr("class", "axisTitle")
+  .text("% de mujeres")
+
+xAxisTitle
+  .attr("x", width - xAxisTitle.node().getBBox().width + margin.right)
+  .attr("y", margin.top + ( height/2) - xAxisTitle.node().getBBox().height);
+
+svg.append("text")
+  .attr("x", 40)
+  .attr("y", 30)
+  //.attr("dy", "0.71em")
+  .style("font-size", "18px")
+  .text("Porcentaje de mujeres en orquestas sinfónicas europeas");
+
+d3.json("https://gist.githubusercontent.com/arancruzmar/fdcae56ba837ece307ff9e3855831774/raw/bc27104b5b3fcd47b4c7ec5956b42d029cfe9138/datosmujeresorquestas.json", function(error, data) {
+  if (error) throw error;
+
+  var nodes = data.map(function(node, index) {
+    return {
+      index: index,
+      Orquesta: node.Orquesta,
+      value: node.value,
+      size: node.size,
+      orquesta:node.name,
+      pais:node.local,
+      x: x(node.value),
+      fx: x(node.value),
+    };
+  });
+
+  var sizeScale = d3.scaleLinear()
+  .domain([d3.min(data, function(d){ return d.size;}), d3.max(data,  function(d){ return d.size;})])
+  .range([minRadius,maxRadius]);
+
+  var colorScale = d3.scaleSequential(d3.interpolateViridis)
+  .domain( [d3.min(data, function(d){ return d.value;}), d3.max(data,  function(d){ return d.value;})] );
+
+  svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + ( margin.top + ( height/2) ) + ")")
+    .call(xAxis);
+
+  var simulation = d3.forceSimulation(nodes)
+    .force("y", d3.forceY(250))
+    .force("collide", d3.forceCollide().radius(function(d){ return sizeScale(d.size) + padding }))
+    .force("manyBody", d3.forceManyBody().strength(-10))
+    .stop();
+
+  for (var i = 0; i < 150; ++i) simulation.tick();
+
+     var xScale = d3.scaleLinear()
+        .rangeRound([0, width]);
+
+      var yScale = d3.scaleBand()
+        .range([height, 0]);
+
+      var g = svg.append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var averageMujeres = d3.nest()
+          .key(function(d) { return d.Orquesta; } )
+          .rollup(function(v) { return d3.mean(v, function(d) { return d.value; } );  } )
+          .entries(data);
+
+      var avgLines = g.selectAll(".avg-lines")
+         .data(averageMujeres)
+           .enter()
+           .append("g")
+           .attr("class", "avg-line")
+           .attr("transform", function(d) { return "translate("+ xScale(d.value) + "," + yScale(d.value) + ")"; });
+
+        avgLines.append("line")
+           .attr("x1", 502)
+           .attr("x2", 502)
+           .attr("y1", 77)
+           .attr("y2", 391);
+
+         avgLines.append("text")
+           //.text(function(d) { return " Media: "+ "34 %"; } )
+           .html("Media: "+ "35 %")
+           .attr("x", 507)
+           .attr("y", 70);
+
+
+//Linea paridad
+        /**   var avgLines2 = g.selectAll(".avg-lines")
+              .data(averageMujeres)
+                .enter()
+                .append("g")
+                .attr("class", "avg-line")
+                .attr("transform", function(d) { return "translate("+ xScale(d.value) + "," + yScale(d.value) + ")"; });
+
+             avgLines2.append("line")
+                .attr("x1", 717.5)
+                .attr("x2", 717.5)
+                .attr("y1", 77)
+                .attr("y2", 391);
+
+              avgLines2.append("text")
+                //.text(function(d) { return " Media: "+ "34 %"; } )
+                .html("Paridad")
+                .attr("x", 722)
+                .attr("y", 81 );*/
+
+  var circle = svg.selectAll("circle")
+    .data(nodes)
+    .enter().append("circle")
+    .style("fill", function(d) { return colorScale(d.value); })
+    .attr("cx", function(d) { return d.x} )
+    .attr("cy", function(d) { return d.y} )
+    .attr("r", function(d) { return sizeScale(d.size)} )
+    .style("opacity", 0.6)
+    .on('mouseover', tip.show)
+    .on('mouseout', tip.hide)
+});
+
+function responsivefy(svg) {
+      // get container + svg aspect ratio
+      var container = d3.select(svg.node().parentNode),
+          width = parseInt(svg.style("width")),
+          height = parseInt(svg.style("height")),
+          aspect = width / height;
+      // add viewBox and preserveAspectRatio properties,
+      // and call resize so that svg resizes on inital page load
+      svg.attr("viewBox", "0 0 " + width + " " + height)
+          .attr("preserveAspectRatio", "xMinYMid")
+          .call(resize);
+      // to register multiple listeners for same event type,
+      // you need to add namespace, i.e., 'click.foo'
+      // necessary if you call invoke this function for multiple svgs
+      // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+      d3.select(window).on("resize." + container.attr("id"), resize);
+      // get width of container and resize svg to fit it
+      function resize() {
+          var targetWidth = parseInt(container.style("width"));
+          svg.attr("width", targetWidth);
+          svg.attr("height", Math.round(targetWidth / aspect));
+      }
+    }
+
+</script>
+</body>
