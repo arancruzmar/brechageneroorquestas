@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <style>
+
+  svg {
+    font-family: Lato;
+    font: 14px sans-serif;
+    fill:#797D7F;
+
+  }
+
+  p{
+    font-family: Lato;
+    font: 14px sans-serif;
+    fill:#797D7F;
+  }
+
+    body {
+      font-family: Lato;
+      font: 14px sans-serif;
+      fill:#797D7F;
+    }
+
+    text {
+      font-family: Lato;
+      font: 13px sans-serif;
+      fill:#797D7F;
+    }
+
+
+    .x-title {
+      font: 13px sans-serif;
+    }
+
+    .grid-line {
+      stroke: black;
+      opacity: 0.2;
+    }
+
+    .lollipop-line {
+      stroke: grey;
+      stroke-width: 1px;
+    }
+
+    circle {
+      stroke-width: 0.5px;
+      stroke: #AFAFAF;
+    }
+
+    circle.lollipop-start {
+      fill: #906896;
+    }
+
+    .lollipop-end {
+      fill: #74b4ba;
+    }
+
+    .lollipop-median {
+      fill: #efa019;
+    }
+
+    .axisTitle {
+      font: 18px sans-serif ;
+    }
+
+    .leyenda {
+      font: 12px sans-serif ;
+    }
+
+
+
+
+
+
+  </style>
+</head>
+
+<body>
+  <script>
+		var margin = {top: 20, right: 50, bottom: 25, left: 60},
+    width = 1024 - margin.left - margin.right,
+    		height = 900 - margin.top - margin.bottom;
+
+
+
+    var svg = d3.select("body").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom);
+          //.append("g")
+          //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          svg.append("g")
+             .attr("transform",
+               "translate(" + margin.left + "," + margin.top + ")");
+
+
+      svg.call(responsivefy);
+
+
+      var xAxisTitle = svg.append("text")
+        .attr("class","axisTitle")
+        .attr("x", 240)
+        .attr("y", 1)
+        .attr("dy", "0.71em")
+        .text("Mujeres y hombres instrumentistas en orquestas europeas por países");
+
+
+
+
+  //  svg.append("g")
+        //  .attr("transform", "translate(0," + ( margin.top + ( height/2) ) + ")");
+
+    //svg.call(responsivefy);
+
+    /*svg.append("text")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("dy", "0.71em")
+      .text("Porcentaje de mujeres en orquestas sinfónicas europeas");*/
+
+    var paygaps = [{"Pais":"Alemania","Mujeres":22,"Hombres":78},{"Pais":"Andorra","Mujeres":26,"Hombres":74},{"Pais":"Armenia","Mujeres":39,"Hombres":61},{"Pais":"Austria","Mujeres":19,"Hombres":81},{"Pais":"Bélgica","Mujeres":34,"Hombres":66},{"Pais":"Bosnia","Mujeres":55,"Hombres":45},{"Pais":"Bulgaria","Mujeres":56,"Hombres":44},{"Pais":"Croacia","Mujeres":36,"Hombres":64},{"Pais":"Dinamarca","Mujeres":41,"Hombres":59},{"Pais":"Escocia","Mujeres":46,"Hombres":54},{"Pais":"Eslovaquia","Mujeres":32,"Hombres":68},{"Pais":"Eslovenia","Mujeres":38,"Hombres":62},{"Pais":"España","Mujeres":34,"Hombres":66},{"Pais":"Estonia","Mujeres":46,"Hombres":54},{"Pais":"Finlandia","Mujeres":36,"Hombres":64},{"Pais":"Francia","Mujeres":32,"Hombres":68},{"Pais":"Hungría","Mujeres":41,"Hombres":59},{"Pais":"Inglaterra","Mujeres":37,"Hombres":63},{"Pais":"Irlanda","Mujeres":40,"Hombres":60},{"Pais":"Islandia","Mujeres":51,"Hombres":49},{"Pais":"Italia","Mujeres":22,"Hombres":78},{"Pais":"Letonia","Mujeres":48,"Hombres":52},{"Pais":"Lituania","Mujeres":38,"Hombres":62},{"Pais":"Luxemburgo","Mujeres":30,"Hombres":70},{"Pais":"Malta","Mujeres":38,"Hombres":62},{"Pais":"Mónaco","Mujeres":30,"Hombres":70},{"Pais":"Montenegro","Mujeres":53,"Hombres":47},{"Pais":"Noruega","Mujeres":41,"Hombres":59},{"Pais":"Países Bajos","Mujeres":40,"Hombres":60},{"Pais":"Polonia","Mujeres":33,"Hombres":67},{"Pais":"Portugal","Mujeres":42,"Hombres":58},{"Pais":"R.Checa","Mujeres":24,"Hombres":76},{"Pais":"Rumania","Mujeres":42,"Hombres":58},{"Pais":"Rusia","Mujeres":29,"Hombres":71},{"Pais":"Serbia","Mujeres":40,"Hombres":60},{"Pais":"Suecia","Mujeres":40,"Hombres":60},{"Pais":"Suiza","Mujeres":39,"Hombres":61},{"Pais":"Turquía","Mujeres":36,"Hombres":64},{"Pais":"Ucrania","Mujeres":41,"Hombres":59}];
+
+    // need to rewrite so start, min, lowest are the same
+    var classToPos = {
+      "lollipop-start": "Mujeres",
+      //"lollipop-median": "Mujeres_JovenesOrquestas",
+      "lollipop-end": "Hombres"
+    }
+
+    var legendLabels = [
+      {label: "Mujeres", class: "lollipop-start"},
+    //  {label: "Jóvenes Orquestas", class: "lollipop-median"},
+      {label: "Hombres", class: "lollipop-end"}
+    ];
+
+    var padding = 0;
+
+    var y = d3.scaleBand()
+    	.domain(paygaps.map(function(d) { return d.Pais }))
+    	.range([40, height])
+    	.padding(padding+90);
+
+    var x = d3.scaleLinear()
+    	.domain([0, d3.max(paygaps, function(d) { return d.Hombres })])
+    	.range([0,width])
+    	.nice();
+
+    // code for positioning legend
+    var legend = svg.append("g")
+        .attr("class", "leyenda");
+
+    var legendX = width / 2 ;
+    var legendY = 48;
+    var spaceBetween = 110;
+
+    var legendPosition = {
+      x: legendX + 30,
+      y: legendY
+    };
+
+    // add circles
+    legend.selectAll("circle")
+    	.data(legendLabels)
+    .enter().append("circle")
+    	.attr("cx", function(d, i) {
+      	return legendPosition.x + spaceBetween * i;
+    	})
+    	.attr("cy", legendPosition.y)
+    	.attr("r", 5)
+    	.attr("class", function(d) { return d.class });
+
+    // add labels
+    legend.selectAll("text")
+    	.data(legendLabels)
+    .enter().append("text")
+      .attr("x", function(d, i) {
+      	return legendPosition.x + spaceBetween * i + 10;
+    	})
+    	.attr("y", legendPosition.y + 4)
+    	.text(function(d) { return d.label });
+
+    var yAxis = d3.axisLeft().scale(y)
+    	.tickSize(0);
+
+    var xAxis = d3.axisTop().scale(x)
+    	.tickFormat(function(d,i) {
+        if (i == 0) {
+          return "0%"
+        } else {
+        	return (d3.format(".2s")(d))+"%";
+        }
+      });
+
+    var yAxisGroup = svg.append("g")
+    	.attr("transform", "translate(79,50)")
+    	.call(yAxis)
+    	.select(".domain").remove();
+
+    var xAxisGroup = svg.append("g")
+      .attr("transform", "translate(83,97)") //Posición eje x
+    	.call(xAxis);
+
+    xAxisGroup.append("text")
+    	.attr("class", "x-title")
+    	//.attr("x", legendX)
+    	//.attr("y", legendY)
+      .attr("transform", "translate(290,-45)")
+    	.text("% de instrumentistas")
+    	.attr("fill", "black");
+
+    var lineGenerator = d3.line();
+    var axisLinePath = function(d) {
+      return lineGenerator([[x(d) + 0.5, 0], [x(d) + 0.5, height]]);
+    };
+
+    var axisLines = xAxisGroup.selectAll("path")
+    	.data(x.ticks(10))
+    .enter().append("path")
+    	.attr("class", "grid-line")
+    	.attr("d", axisLinePath);
+
+      var lollipopLinePath = function(d) {
+        return lineGenerator([[x(d.Mujeres), y(d.Pais) + (y.bandwidth() / 2) ], [x(d.Hombres), y(d.Pais) + (y.bandwidth()/2)]]);
+      };
+
+   	var lollipopsGroup = svg.append("g")
+        .attr("transform", "translate(84,52)");
+        //.attr("class", "lollipops");
+
+    var lollipops = lollipopsGroup.selectAll("g")
+    	.data(paygaps)
+      .enter().append("g")
+    	.attr("class", "lollipop")
+
+
+    lollipops.append("path")
+      //.attr("transform", "translate(83,70)")
+    	.attr("class", "lollipop-line")
+    	.attr("d", lollipopLinePath);
+
+    var startCircles = lollipops.append("circle")
+    	.attr("class", "lollipop-start")
+    	.attr("r", 5)
+      .attr("cx", function(d) {
+      	return x(d.Mujeres);
+    	})
+    	.attr("cy", function(d) {
+        return y(d.Pais) + y.bandwidth() / 2;
+			})
+    	.on("mouseover", showLabel)
+      .on("mouseout", hideLabel);
+
+  /** var medianCircles = lollipops.append("circle")
+    	.attr("class", "lollipop-median")
+    	.attr("r", 5)
+    	.attr("cx", function(d) {
+      	return x(d.Mujeres_JovenesOrquestas);
+    	})
+    	.attr("cy", function(d) {
+        return y(d.Instrumentos) + y.bandwidth() / 2;
+			})
+      .on("mouseover", showLabel)
+      .on("mouseout", hideLabel);*/
+
+    var endCircles = lollipops.append("circle")
+    	.attr("class", "lollipop-end")
+    	.attr("r", 5)
+    	.attr("cx", function(d) {
+      	return x(d.Hombres);
+    	})
+    	.attr("cy", function(d) {
+        return y(d.Pais) + y.bandwidth() / 2;
+			})
+      .on("mouseover", showLabel)
+      .on("mouseout", hideLabel);
+
+    function showLabel() {
+      var selection = d3.select(this);
+      var pos = classToPos[selection.attr("class")];
+
+      d3.select(this.parentNode).append("text")
+        .attr("x", function(d) { return x(d[pos]); })
+        .attr("y", function(d) { return y(d.Pais) + y.bandwidth() / 2; })
+        .attr("dy", "-0.5em")
+        .attr("text-anchor", "middle")
+        .text(function(d) {
+        	return ((d[pos])+" % en "+d.Pais);
+      	});
+    }
+
+    function hideLabel(d) {
+      d3.select(this.parentNode).select("text").remove();
+    }
+
+
+
+    function responsivefy(svg) {
+          // get container + svg aspect ratio
+          var container = d3.select(svg.node().parentNode),
+              width = parseInt(svg.style("width")),
+              height = parseInt(svg.style("height")),
+              aspect = width / height;
+          // add viewBox and preserveAspectRatio properties,
+          // and call resize so that svg resizes on inital page load
+          svg.attr("viewBox", "0 0 " + width + " " + height)
+              .attr("preserveAspectRatio", "xMinYMid")
+              .call(resize);
+          // to register multiple listeners for same event type,
+          // you need to add namespace, i.e., 'click.foo'
+          // necessary if you call invoke this function for multiple svgs
+          // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+          d3.select(window).on("resize." + container.attr("id"), resize);
+          // get width of container and resize svg to fit it
+          function resize() {
+              var targetWidth = parseInt(container.style("width"));
+              svg.attr("width", targetWidth);
+              svg.attr("height", Math.round(targetWidth / aspect));
+          }
+        }
+
+  </script>
+
+</body>
