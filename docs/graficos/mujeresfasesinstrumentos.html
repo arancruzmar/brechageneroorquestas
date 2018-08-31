@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <style>
+
+  svg {
+    font-family: Lato;
+    font: 14px sans-serif;
+    fill:#797D7F;
+
+  }
+
+  p{
+    font-family: Lato;
+    font: 14px sans-serif;
+    fill:#797D7F;
+  }
+
+    body {
+      font-family: Lato;
+      font: 14px sans-serif;
+      fill:#797D7F;
+    }
+
+    text {
+      font-family: Lato;
+      font: 13px sans-serif;
+      fill:#797D7F;
+    }
+
+
+    .x-title {
+      font:  14px sans-serif;
+      fill:#797D7F;
+    }
+
+    .grid-line {
+      stroke: #797D7F;
+      opacity: 0.2;
+    }
+
+    .lollipop-line {
+      stroke: #797D7F;
+      stroke-width: 1px;
+    }
+
+    circle {
+      stroke-width: 0.5px;
+      stroke: #797D7F;
+    }
+
+    circle.lollipop-start {
+      /*fill: #006cad;*/
+      fill: #ccb9ce;
+    }
+
+    .lollipop-end {
+      /*fill:#6b4f70;*/
+      fill:#634867; /*#7b4c82;/*#806484;/*#75547a; #906896;*/
+      /*fill: #f59ca1;*/
+    }
+
+    .lollipop-median {
+      fill:#98749e;/*#AB81B1;*/
+      /*fill: #efa019;*/
+    }
+
+    .axisTitle {
+
+      fill:#797D7F;
+    }
+
+    .leyenda {
+      font: 13px sans-serif ;
+      fill:#797D7F;
+    }
+
+    .tooltip {
+      position: absolute;
+      display: none;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 3px;
+      box-shadow: -3px 3px 15px #888;
+      color: white;
+      padding: 6px;
+      font-size: 14px;
+    }
+
+
+  </style>
+</head>
+
+<body>
+  <script>
+		var margin = {top: 20, right: 50, bottom: 25, left: 50},
+    width = 960 - margin.left - margin.right,
+    		height = 500 - margin.top - margin.bottom;
+
+
+
+    var svg = d3.select("body").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom);
+          //.append("g")
+          //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          svg.append("g")
+             .attr("transform",
+               "translate(" + margin.left + "," + margin.top + ")");
+
+
+      svg.call(responsivefy);
+
+
+      var xAxisTitle = svg.append("text")
+        .attr("class","axisTitle")
+        .attr("x", 189)
+        .attr("y", 3)
+        .attr("dy", "0.8em")
+        .style("font-size", "18px")
+        .text("Mujeres por intrumentos en conservatorios y orquestas");
+
+
+
+
+  //  svg.append("g")
+        //  .attr("transform", "translate(0," + ( margin.top + ( height/2) ) + ")");
+
+    //svg.call(responsivefy);
+
+    /*svg.append("text")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("dy", "0.71em")
+      .text("Porcentaje de mujeres en orquestas sinfónicas europeas");*/
+
+    var paygaps = [
+      {"Instrumentos":"Violines","Mujeres_Conservatorios":64,"Mujeres_JovenesOrquestas":65,"Mujeres_Orquestas":48},
+      {"Instrumentos":"Violas","Mujeres_Conservatorios":64,"Mujeres_JovenesOrquestas":53,"Mujeres_Orquestas":48},
+      {"Instrumentos":"Violonchelos","Mujeres_Conservatorios":66,"Mujeres_JovenesOrquestas":61,"Mujeres_Orquestas":48},
+      {"Instrumentos":"Contrabajos","Mujeres_Conservatorios":46,"Mujeres_JovenesOrquestas":45,"Mujeres_Orquestas":14},
+      {"Instrumentos":"Flautas","Mujeres_Conservatorios":73,"Mujeres_JovenesOrquestas":62,"Mujeres_Orquestas":47},
+      {"Instrumentos":"Oboes","Mujeres_Conservatorios":64,"Mujeres_JovenesOrquestas":57,"Mujeres_Orquestas":21},
+      {"Instrumentos":"Clarinetes","Mujeres_Conservatorios":54,"Mujeres_JovenesOrquestas":33,"Mujeres_Orquestas":16},
+      {"Instrumentos":"Fagotes","Mujeres_Conservatorios":51,"Mujeres_JovenesOrquestas":37,"Mujeres_Orquestas":18},
+      {"Instrumentos":"Trompas","Mujeres_Conservatorios":39,"Mujeres_JovenesOrquestas":37,"Mujeres_Orquestas":9},
+      {"Instrumentos":"Trompetas","Mujeres_Conservatorios":18,"Mujeres_JovenesOrquestas":8,"Mujeres_Orquestas":5},
+      {"Instrumentos":"Trombones","Mujeres_Conservatorios":24,"Mujeres_JovenesOrquestas":8,"Mujeres_Orquestas":2},
+      {"Instrumentos":"Tubas","Mujeres_Conservatorios":16,"Mujeres_JovenesOrquestas":6,"Mujeres_Orquestas":4},
+      {"Instrumentos":"Percusiones","Mujeres_Conservatorios":23,"Mujeres_JovenesOrquestas":9,"Mujeres_Orquestas":7},
+      {"Instrumentos":"Pianos","Mujeres_Conservatorios":63,"Mujeres_JovenesOrquestas":33,"Mujeres_Orquestas":20},
+      {"Instrumentos":"Arpas","Mujeres_Conservatorios":86,"Mujeres_JovenesOrquestas":80,"Mujeres_Orquestas":95}
+    ];
+
+    // need to rewrite so start, min, lowest are the same
+    var classToPos = {
+      "lollipop-start": "Mujeres_Conservatorios",
+      "lollipop-median": "Mujeres_JovenesOrquestas",
+      "lollipop-end": "Mujeres_Orquestas"
+    }
+
+    var legendLabels = [
+      {label: "Conservatorios", class: "lollipop-start"},
+      {label: "Jóvenes Orquestas", class: "lollipop-median"},
+      {label: "Orquestas Sinfónicas", class: "lollipop-end"}
+    ];
+
+    var padding = 0;
+
+    var y = d3.scaleBand()
+    	.domain(paygaps.map(function(d) { return d.Instrumentos }))
+    	.range([40, height])
+    	.padding(padding+50);
+
+    var x = d3.scaleLinear()
+    	.domain([0, d3.max(paygaps, function(d) { return d.Mujeres_Orquestas })])
+    	.range([width,0])
+    	.nice();
+
+    // code for positioning legend
+    var legend = svg.append("g")
+        .attr("class", "leyenda");
+
+    var legendX = width / 3 ;
+    var legendY = 47;
+    var spaceBetween = 150;
+
+    var legendPosition = {
+      x: legendX + 30,
+      y: legendY
+    };
+
+    // add circles
+    legend.selectAll("circle")
+    	.data(legendLabels)
+    .enter().append("circle")
+    	.attr("cx", function(d, i) {
+      	return legendPosition.x + spaceBetween * i;
+    	})
+    	.attr("cy", legendPosition.y)
+    	.attr("r", 5)
+    	.attr("class", function(d) { return d.class });
+
+    // add labels
+    legend.selectAll("text")
+    	.data(legendLabels)
+    .enter().append("text")
+      .attr("x", function(d, i) {
+      	return legendPosition.x + spaceBetween * i + 10;
+    	})
+    	.attr("y", legendPosition.y + 5)
+    	.text(function(d) { return d.label });
+
+    var yAxis = d3.axisLeft().scale(y)
+    	.tickSize(0);
+
+    var xAxis = d3.axisTop().scale(x)
+    	.tickFormat(function(d,i) {
+        if (i == 0) {
+          return "0%"
+        } else {
+        	return (d3.format(".2s")(d))+"%";
+        }
+      });
+
+    var yAxisGroup = svg.append("g")
+    	.attr("transform", "translate(79,49)")
+    	.call(yAxis)
+    	.select(".domain").remove();
+
+    var xAxisGroup = svg.append("g")
+      .attr("transform", "translate(83,97)") //Posición eje x
+    	.call(xAxis);
+
+    xAxisGroup.append("text")
+    	.attr("class", "x-title")
+    	//.attr("x", legendX)
+    	//.attr("y", legendY)
+      .attr("transform", "translate(150,-45)")
+    	.text("% de mujeres")
+    	.attr("fill", "black");
+
+    var lineGenerator = d3.line();
+    var axisLinePath = function(d) {
+      return lineGenerator([[x(d) + 0.5, 0], [x(d) + 0.5, height]]);
+    };
+
+    var axisLines = xAxisGroup.selectAll("path")
+    	.data(x.ticks(10))
+    .enter().append("path")
+    	.attr("class", "grid-line")
+    	.attr("d", axisLinePath);
+
+    var lollipopLinePath = function(d) {
+      return lineGenerator([[x(d.Mujeres_Conservatorios), y(d.Instrumentos) + (y.bandwidth() / 2) ], [x(d.Mujeres_JovenesOrquestas), y(d.Instrumentos) + (y.bandwidth() / 2)], [x(d.Mujeres_Orquestas), y(d.Instrumentos) + (y.bandwidth() / 2)]]);
+    };
+
+   	var lollipopsGroup = svg.append("g")
+        .attr("transform", "translate(84,50)");
+        //.attr("class", "lollipops");
+
+    var lollipops = lollipopsGroup.selectAll("g")
+    	.data(paygaps)
+      .enter().append("g")
+    	.attr("class", "lollipop")
+
+
+    lollipops.append("path")
+      //.attr("transform", "translate(83,70)")
+    	.attr("class", "lollipop-line")
+    	.attr("d", lollipopLinePath);
+
+    var startCircles = lollipops.append("circle")
+    	.attr("class", "lollipop-start")
+    	.attr("r", 5)
+      .attr("cx", function(d) {
+      	return x(d.Mujeres_Conservatorios);
+    	})
+    	.attr("cy", function(d) {
+        return y(d.Instrumentos) + y.bandwidth() / 2;
+			})
+    	.on("mouseover", showLabel)
+      .on("mouseout", hideLabel);
+
+   var medianCircles = lollipops.append("circle")
+    	.attr("class", "lollipop-median")
+    	.attr("r", 5)
+    	.attr("cx", function(d) {
+      	return x(d.Mujeres_JovenesOrquestas);
+    	})
+    	.attr("cy", function(d) {
+        return y(d.Instrumentos) + y.bandwidth() / 2;
+			})
+      .on("mouseover", showLabel)
+      .on("mouseout", hideLabel);
+
+    var endCircles = lollipops.append("circle")
+    	.attr("class", "lollipop-end")
+    	.attr("r", 5)
+    	.attr("cx", function(d) {
+      	return x(d.Mujeres_Orquestas);
+    	})
+    	.attr("cy", function(d) {
+        return y(d.Instrumentos) + y.bandwidth() / 2;
+			})
+      .on("mouseover", showLabel)
+      .on("mouseout", hideLabel);
+
+    function showLabel() {
+      var selection = d3.select(this);
+      var pos = classToPos[selection.attr("class")];
+
+      d3.select(this.parentNode).append("text")
+        .attr("x", function(d) { return x(d[pos]); })
+        .attr("y", function(d) { return y(d.Instrumentos) + y.bandwidth() / 2; })
+        .attr("dy", "-0.7em")
+        .attr("text-anchor", "middle")
+        .style('font-size','14px')
+        .html(function(d) {
+        	return ((d[pos])+" % de mujeres en "+d.Instrumentos);
+      	});
+    }
+
+    function hideLabel(d) {
+      d3.select(this.parentNode).select("text").remove();
+    }
+
+
+
+    function responsivefy(svg) {
+          // get container + svg aspect ratio
+          var container = d3.select(svg.node().parentNode),
+              width = parseInt(svg.style("width")),
+              height = parseInt(svg.style("height")),
+              aspect = width / height;
+          // add viewBox and preserveAspectRatio properties,
+          // and call resize so that svg resizes on inital page load
+          svg.attr("viewBox", "0 0 " + width + " " + height)
+              .attr("preserveAspectRatio", "xMinYMid")
+              .call(resize);
+          // to register multiple listeners for same event type,
+          // you need to add namespace, i.e., 'click.foo'
+          // necessary if you call invoke this function for multiple svgs
+          // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+          d3.select(window).on("resize." + container.attr("id"), resize);
+          // get width of container and resize svg to fit it
+          function resize() {
+              var targetWidth = parseInt(container.style("width"));
+              svg.attr("width", targetWidth);
+              svg.attr("height", Math.round(targetWidth / aspect));
+          }
+        }
+
+  </script>
+
+</body>
