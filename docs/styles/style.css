@@ -148,6 +148,15 @@ a {
     text-decoration: none
 }
 
+.metodologia {
+   border-style:solid;
+   border-width:2px;
+   border-color:#535557;
+   position: relative;
+   width: 83%;
+   padding: 0px 20px 10px 20px;
+}
+
 
 
 @media (max-width: 960px) {
