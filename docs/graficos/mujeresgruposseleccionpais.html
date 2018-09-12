@@ -26,7 +26,7 @@
         }
         .bar {
             fill: #AB81B1;
-            
+
         }
 
         .axis path,
@@ -39,24 +39,28 @@
         .vis_container {
         font-size: 14px;
         font-family: Lato;
-        padding: 10px 8px 10px 14px;
+        padding: 10px 8px 10px 10px;
         background: #fff;
         border: 1px solid #ccc;
         border-radius: 6px;
+        align:center;
 
       }
       .titulo {
         font-family: Lato;
         font-size:18px;
         color: #797D7F;
+        padding: 0px 20px 20px 100px;
+
       }
+
       .container {
         margin: auto;
         width: 100%;
-        max-width: 435px;
+        max-width: 535px;
       }
 
-@media (max-width: 435px) {
+@media (max-width: 500px) {
   .titulo {
     font-family: Lato;
     font-size:10px;
@@ -70,8 +74,9 @@
     </head>
     <body>
 
-    <p><span class="titulo">Mujeres por instrumentos y país</span></p>
-        <div id='vis_container'></div>
+      <div class="titulo">Mujeres por grupos de instrumentos y país</div>
+      <div class="titulo"><div id='vis_container'></div></div>
+        <div>
         <script type="text/javascript">
             // Load and munge data, then make the visualization.
             var fileName = "https://gist.githubusercontent.com/arancruzmar/cdccaafc105c8758e8e8a0b902fc5f14/raw/3304ca17651740a703fbae820e692e5cd8852510/datosgruposinstrumentosporpaisesmujeres.csv";
@@ -93,9 +98,9 @@
 
             var makeVis = function(cerealMap) {
                 // Define dimensions of vis
-                var margin = { top: 20, right: 70, bottom: 50, left: 40 },
-                    width  = 435,
-                    height = 250;
+                var margin = { top: 30, right: 0, bottom: 20, left:40 },
+                    width  = 500,
+                    height = 275;
 
                 // Make x scale
                 var xScale = d3.scale.ordinal()
@@ -231,7 +236,7 @@
                       }
                     }
         </script>
-
+      </div>
     </body>
 
 </html>
