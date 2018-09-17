@@ -25,7 +25,7 @@
 
     text {
       font-family: Lato;
-      font: 13px sans-serif;
+      font: 13.3px sans-serif;
       fill:#797D7F;
     }
 
@@ -80,7 +80,7 @@
 <body>
   <script>
 		var margin = {top: 20, right: 50, bottom: 25, left: 60},
-    width = 1024 - margin.left - margin.right,
+    width = 960 - margin.left - margin.right,
     		height = 900 - margin.top - margin.bottom;
 
 
@@ -100,9 +100,10 @@
 
       var xAxisTitle = svg.append("text")
         .attr("class","axisTitle")
-        .attr("x", 240)
-        .attr("y", 1)
+        .attr("x", 220)
+        .attr("y", 0)
         .attr("dy", "0.71em")
+        .style("font-size", "19px")
         .text("Mujeres y hombres instrumentistas en orquestas europeas por países");
 
 
@@ -282,8 +283,9 @@
       d3.select(this.parentNode).append("text")
         .attr("x", function(d) { return x(d[pos]); })
         .attr("y", function(d) { return y(d.Pais) + y.bandwidth() / 2; })
-        .attr("dy", "-0.5em")
+        .attr("dy", "-0.3em")
         .attr("text-anchor", "middle")
+        .style("font-size", "15px")
         .text(function(d) {
         	return ((d[pos])+" % en "+d.Pais);
       	});

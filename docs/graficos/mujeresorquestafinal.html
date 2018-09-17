@@ -138,10 +138,10 @@ xAxisTitle
   .attr("y", margin.top + ( height/2) - xAxisTitle.node().getBBox().height);
 
 svg.append("text")
-  .attr("x", 40)
+  .attr("x", 250)
   .attr("y", 30)
   //.attr("dy", "0.71em")
-  .style("font-size", "18px")
+  .style("font-size", "19px")
   .text("Porcentaje de mujeres en orquestas sinfónicas europeas");
 
 d3.json("https://gist.githubusercontent.com/arancruzmar/fdcae56ba837ece307ff9e3855831774/raw/bc27104b5b3fcd47b4c7ec5956b42d029cfe9138/datosmujeresorquestas.json", function(error, data) {

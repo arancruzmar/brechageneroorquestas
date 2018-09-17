@@ -19,19 +19,19 @@
 
     body {
       font-family: Lato;
-      font: 14px sans-serif;
+      font: 16px sans-serif;
       fill:#797D7F;
     }
 
     text {
       font-family: Lato;
-      font: 13px sans-serif;
+      font: 13.7px sans-serif;
       fill:#797D7F;
     }
 
 
     .x-title {
-      font:  14px sans-serif;
+      font:  16px sans-serif;
       fill:#797D7F;
     }
 
@@ -114,10 +114,10 @@
 
       var xAxisTitle = svg.append("text")
         .attr("class","axisTitle")
-        .attr("x", 189)
-        .attr("y", 3)
+        .attr("x", 275)
+        .attr("y", 0)
         .attr("dy", "0.8em")
-        .style("font-size", "18px")
+        .style("font-size", "19px")
         .text("Mujeres por intrumentos en conservatorios y orquestas");
 
 
@@ -174,7 +174,7 @@
 
     var x = d3.scaleLinear()
     	.domain([0, d3.max(paygaps, function(d) { return d.Mujeres_Orquestas })])
-    	.range([width,0])
+    	.range([width,-0])
     	.nice();
 
     // code for positioning legend
@@ -195,7 +195,7 @@
     	.data(legendLabels)
     .enter().append("circle")
     	.attr("cx", function(d, i) {
-      	return legendPosition.x + spaceBetween * i;
+      	return legendPosition.x + spaceBetween * i -30;
     	})
     	.attr("cy", legendPosition.y)
     	.attr("r", 5)
@@ -206,7 +206,7 @@
     	.data(legendLabels)
     .enter().append("text")
       .attr("x", function(d, i) {
-      	return legendPosition.x + spaceBetween * i + 10;
+      	return legendPosition.x + spaceBetween * i - 15;
     	})
     	.attr("y", legendPosition.y + 5)
     	.text(function(d) { return d.label });
@@ -232,13 +232,13 @@
       .attr("transform", "translate(83,97)") //Posición eje x
     	.call(xAxis);
 
-    xAxisGroup.append("text")
+  /*  xAxisGroup.append("text")
     	.attr("class", "x-title")
     	//.attr("x", legendX)
     	//.attr("y", legendY)
       .attr("transform", "translate(150,-45)")
     	.text("% de mujeres")
-    	.attr("fill", "black");
+    	.attr("fill", "black");*/
 
     var lineGenerator = d3.line();
     var axisLinePath = function(d) {
@@ -313,9 +313,9 @@
       d3.select(this.parentNode).append("text")
         .attr("x", function(d) { return x(d[pos]); })
         .attr("y", function(d) { return y(d.Instrumentos) + y.bandwidth() / 2; })
-        .attr("dy", "-0.7em")
+        .attr("dy", "-0.5em")
         .attr("text-anchor", "middle")
-        .style('font-size','14px')
+        .style('font-size','15px')
         .html(function(d) {
         	return ((d[pos])+" % de mujeres en "+d.Instrumentos);
       	});
