@@ -17,13 +17,13 @@
 
 
         .axis {
-            font-size: 19px;
+            font-size: 23px;
             color: #797D7F;
 
         }
         svg {
           font-family: Lato;
-          font-size: 24px;
+          font-size: 26px;
           fill: #797D7F;
         }
 
@@ -38,7 +38,7 @@
         }
 
         .label {
-            font-size: 19px;
+            font-size: 23px;
 
         }
 
@@ -95,9 +95,9 @@
 
             var margin = {
                 top: 125,
-                right: 70,
+                right: 80,
                 bottom: 140,
-                left: 210
+                left: 217
             };
 
             var width = 1200 - margin.left - margin.right,
@@ -112,9 +112,9 @@
 
                 svg.append("text")
                 .attr("x", 0)
-                .attr("y", -120)
+                .attr("y", -123)
                 .attr("dy", "0.71em")
-                .style("font-size", "24px")
+                .style("font-size", "28px")
                 .text("Porcentaje de encuestados/as por sexo que consideran que..."); //  .text("Encuesta sobre la percepción de la composición de orquestas");
 
            var linea = svg.append("line")
@@ -128,7 +128,7 @@
                             .html("100%")
                             .attr("x", 930)
                             .attr("y", 310)
-                            .style("font-size", "18px");
+                            .style("font-size", "21px");
           var linea2 = svg.append("line")
                  .attr("x1", 950)
                  .attr("y1", 275)
@@ -140,7 +140,7 @@
                             .html("50%")
                             .attr("x", 480)
                             .attr("y", 310)
-                            .style("font-size", "18px");
+                            .style("font-size", "21px");
           var linea3 = svg.append("line")
                                    .attr("x1", 490)
                                    .attr("y1", 275)
@@ -152,7 +152,7 @@
                 .html("0%")
                 .attr("x", 1)
                 .attr("y", 310)
-                .style("font-size", "18px");
+                .style("font-size", "21px");
 
           var linea4 = svg.append("line")
               .attr("x1", 247)
@@ -166,7 +166,7 @@
                     .html("25%")
                     .attr("x", 237)
                     .attr("y", 310)
-                    .style("font-size", "18px");
+                    .style("font-size", "21px");
 
                     var linea5 = svg.append("line")
                         .attr("x1", 720)
@@ -180,7 +180,7 @@
                               .html("75%")
                               .attr("x", 710)
                               .attr("y", 310)
-                              .style("font-size", "18px");
+                              .style("font-size", "21px");
 
             var legspacing = 25;
 
@@ -191,8 +191,8 @@
 
                 legend.append("rect")
                     .attr("fill", color)
-                    .attr("width", 20)
-                    .attr("height", 20)
+                    .attr("width", 22)
+                    .attr("height", 22)
                     .attr("y", function (d, i) {
                         return i * legspacing - 70;
                     })
@@ -201,7 +201,7 @@
                 legend.append("text")
                     .attr("class", "label")
                     .attr("y", function (d, i) {
-                        return i * legspacing - 53;
+                        return i * legspacing - 51;
                     })
                     .attr("x", 80)
                     .attr("text-anchor", "start")
@@ -264,9 +264,9 @@
                 .call(yAxis)
                 .selectAll(".tick text")
                 .attr("transform", function (d) {
-                    return "translate(0," + -0.35 * y0.rangeBand() + ")";
+                    return "translate(0," + -0.4 * y0.rangeBand() + ")";
                 })
-                .call(wrap2, 115, -10);
+                .call(wrap2, 150, -10);
 
 
             var bars = svg.selectAll(".bar")
