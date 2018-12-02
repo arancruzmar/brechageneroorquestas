@@ -174,7 +174,7 @@
 
     var x = d3.scaleLinear()
     	.domain([0, d3.max(paygaps, function(d) { return d.Mujeres_Orquestas })])
-    	.range([width,-0])
+    	.range([0,width])
     	.nice();
 
     // code for positioning legend
