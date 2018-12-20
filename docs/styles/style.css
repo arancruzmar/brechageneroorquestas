@@ -7,7 +7,7 @@ body {
 .container {
   margin: auto;
   width: 100%;
-  max-width: 1050px;
+  max-width: 960px;
 }
 .container3 {
   margin: auto;
@@ -193,7 +193,7 @@ a {
 
 
 
-@media (max-width: 1050px) {
+@media (max-width: 960px) {
   header {
     padding: 5px 5px;
     background: #ffffff;
