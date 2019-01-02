@@ -127,11 +127,17 @@ svg.call(tip);
 svg.append("g")
   .attr("class", "x axis")
   .attr("transform", "translate(0," + ( margin.top + ( height/2) ) + ")")
-  .call(xAxis);
+  .call(xAxis)
+  .selectAll("text")
+    .style("font-family", "Lato")
+    .style("fill","#797D7F")
+    .style("font-size", "14px");
 
 var xAxisTitle = svg.append("text")
   .attr("class", "axisTitle")
-  .text("% de mujeres")
+  .style("font-family", "Lato")
+  .style("font-size", "14px")
+  .text("% de mujeres");
 
 xAxisTitle
   .attr("x", width - xAxisTitle.node().getBBox().width + margin.right)
@@ -167,10 +173,10 @@ d3.json("https://gist.githubusercontent.com/arancruzmar/fdcae56ba837ece307ff9e38
   var colorScale = d3.scaleSequential(d3.interpolateViridis)
   .domain( [d3.min(data, function(d){ return d.value;}), d3.max(data,  function(d){ return d.value;})] );
 
-  svg.append("g")
+  /*svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + ( margin.top + ( height/2) ) + ")")
-    .call(xAxis);
+    .call(xAxis);*/
 
   var simulation = d3.forceSimulation(nodes)
     .force("y", d3.forceY(250))
