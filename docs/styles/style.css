@@ -292,7 +292,9 @@ a {
     font-size:19px;
   }*/
   .container7 {
-  max-width: 530px;
+  margin: auto;
+  width: 100%;
+  max-width: 550px;
 }
   .container_chart_4 {
                 position: relative;
