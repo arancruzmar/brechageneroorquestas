@@ -275,8 +275,6 @@ a {
     font-size:19px;
   }*/
   .container7 {
-  margin: auto;
-  width: 100%;
-  max-width: 500px;
+  padding-bottom: 75%;
 }
 }
