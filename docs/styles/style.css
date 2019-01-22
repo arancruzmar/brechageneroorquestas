@@ -291,9 +291,9 @@ a {
     color: #66696b;
     font-size:19px;
   }*/
- /* .container7 {
-  margin: auto;
-}*/
+  .container7 {
+  max-width: 530px;
+}
   .container_chart_4 {
                 position: relative;
                 overflow: visible;
