@@ -32,7 +32,11 @@ body {
   max-width: 960px;
 
 }
-
+.container7 {
+  margin: auto;
+  width: 100%;
+  max-width: 795px;
+}
 
 header {
   padding: 15px 15px;
