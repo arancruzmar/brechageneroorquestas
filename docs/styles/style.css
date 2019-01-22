@@ -30,7 +30,7 @@ body {
 .container_chart_4 {
                 position: relative;
                 overflow: visible;
-                padding-bottom: 51%;
+                padding-bottom: 53%;
                 /*max-width: 835px;
                 text-align:center;*/
             }
@@ -298,13 +298,13 @@ a {
                 position: relative;
                 overflow: visible;
                 padding-top: 5px;
-                /* padding-right: 5px;*/
+                padding-right: 5px;
                 padding-bottom: 5px;
-                /* padding-left: 5px;*/
-                margin-top: 5px;
+                padding-left: 5px;
+               /* margin-top: 5px;
                 margin-bottom: 500px;
                 margin-right: 530px;
-                margin-left: 5px;
+                margin-left: 5px;*/
               
                 /*padding-bottom: 55%;
                 max-width: 835px;
