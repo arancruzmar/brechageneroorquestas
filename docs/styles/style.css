@@ -291,9 +291,9 @@ a {
     color: #66696b;
     font-size:19px;
   }*/
-  .container7 {
+ /* .container7 {
   margin: auto;
-}
+}*/
   .container_chart_4 {
                 position: relative;
                 overflow: visible;
@@ -302,8 +302,8 @@ a {
                 padding-bottom: 5px;
                 padding-left: 5px;
                 margin-top: 0px;
-                margin-bottom: 500px;
-                margin-right: 530px;
+                margin-bottom: 600px;
+                margin-right: 550px;
                 margin-left: 0px;
               
                 /*padding-bottom: 55%;
