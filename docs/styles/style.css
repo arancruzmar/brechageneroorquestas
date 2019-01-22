@@ -26,6 +26,32 @@ body {
   max-width: 750px;
 
 }
+
+.container_chart_4 {
+                position: relative;
+                overflow: visible;
+                /*padding-top: 5px;
+                padding-right: 5px;
+                padding-bottom: 5px;
+                padding-left: 5px;
+                margin-top: 5px;
+                margin-bottom: 500px;
+                margin-right: 830px;
+                margin-left: 5px; Así se ve en el ipad */
+              
+                padding-bottom: 55%;
+                /*max-width: 835px;
+                text-align:center;*/
+            }
+            .container_chart_4 iframe {
+                position: absolute;
+                top:0;
+                left: 0;
+                width: 100%;
+                height:100%;
+            }
+
+
 .container5 {
   margin: auto;
   width: 100%;
@@ -275,7 +301,26 @@ a {
     font-size:19px;
   }*/
   .container_chart_4 {
-  padding-bottom: 95%;
-    width: 50%;
-}
+                position: relative;
+                overflow: visible;
+                padding-top: 5px;
+                padding-right: 5px;
+                padding-bottom: 5px;
+                padding-left: 5px;
+                margin-top: 5px;
+                margin-bottom: 500px;
+                margin-right: 830px;
+                margin-left: 5px;
+              
+                /*padding-bottom: 55%;
+                max-width: 835px;
+                text-align:center;*/
+            }
+            .container_chart_4 iframe {
+                position: absolute;
+                top:0;
+                left: 0;
+                width: 100%;
+                height:100%;
+            }
 }
