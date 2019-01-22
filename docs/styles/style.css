@@ -35,7 +35,7 @@ body {
 .container7 {
   margin: auto;
   width: 100%;
-  max-width: 795px;
+  max-width: 835px;
 }
 
 header {
@@ -274,4 +274,9 @@ a {
     color: #66696b;
     font-size:19px;
   }*/
+  .container7 {
+  margin: auto;
+  width: 100%;
+  max-width: 500px;
+}
 }
