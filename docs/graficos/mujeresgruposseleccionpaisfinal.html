@@ -109,7 +109,7 @@
                     height = 275;
 
                 // Make x scale
-                var xScale = d3.scale.ordinal()
+                var xScale = d3.scaleOrdinal() /* d3.scale.ordinal()*/
                     .domain(gruposInstrumentos)
                     .rangeRoundBands([0, width], 0.1);
 
